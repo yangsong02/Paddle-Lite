@@ -7,6 +7,7 @@ add_kernel(squeeze_compute_host Host basic SRCS squeeze_compute.cc DEPS ${lite_k
 add_kernel(unsqueeze_compute_host Host basic SRCS unsqueeze_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(multiclass_nms_compute_host Host basic SRCS multiclass_nms_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(expand_compute_host Host basic SRCS expand_compute.cc DEPS ${lite_kernel_deps})
+add_kernel(expand_as_compute_host Host basic SRCS expand_as_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(shape_compute_host Host extra SRCS shape_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(is_empty_compute_host Host extra SRCS is_empty_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(crf_decoding_compute_host Host extra SRCS crf_decoding_compute.cc DEPS ${lite_kernel_deps})
@@ -18,6 +19,10 @@ add_kernel(read_from_array_compute_host Host extra SRCS read_from_array_compute.
 add_kernel(assign_compute_host Host extra SRCS assign_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(retinanet_detection_output_compute_host Host extra SRCS retinanet_detection_output_compute.cc DEPS ${lite_kernel_deps})
 add_kernel(where_index_compute_host Host extra SRCS where_index_compute.cc DEPS ${lite_kernel_deps})
+add_kernel(print_compute_host Host extra SRCS print_compute.cc DEPS ${lite_kernel_deps})
+add_kernel(while_compute_host Host extra SRCS while_compute.cc DEPS ${lite_kernel_deps} program)
+add_kernel(conditional_block_compute_host Host extra SRCS conditional_block_compute.cc DEPS ${lite_kernel_deps} program)
+add_kernel(activation_grad_compute_host Host train SRCS activation_grad_compute.cc DEPS ${lite_kernel_deps})
 
 if(LITE_BUILD_EXTRA)
   lite_cc_test(test_where_index_compute_host SRCS where_index_compute.cc DEPS where_index_compute_host)

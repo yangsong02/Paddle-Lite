@@ -34,6 +34,7 @@ add_operator(fake_quant extra SRCS fake_quantize_moving_avg_max_abs.cc DEPS ${op
 add_operator(fake_dequant extra SRCS fake_dequantize_max_abs.cc DEPS ${op_DEPS})
 add_operator(conv_transpose_op basic SRCS conv_transpose_op.cc DEPS ${op_DEPS})
 add_operator(expand_op_lite basic SRCS expand_op.cc DEPS ${op_DEPS})
+add_operator(expand_as_op_lite basic SRCS expand_as_op.cc DEPS ${op_DEPS})
 add_operator(squeeze_op_lite basic SRCS squeeze_op.cc DEPS ${op_DEPS})
 add_operator(unsqueeze_op_lite basic SRCS unsqueeze_op.cc DEPS ${op_DEPS})
 add_operator(stack_op basic SRCS stack_op.cc DEPS ${op_DEPS})
@@ -77,6 +78,8 @@ add_operator(reduce_max_op_lite extra SRCS reduce_max_op.cc DEPS ${op_DEPS})
 add_operator(shape_op_lite extra SRCS shape_op.cc DEPS ${op_DEPS})
 add_operator(sequence_expand_op_lite extra SRCS sequence_expand_op.cc DEPS ${op_DEPS})
 add_operator(sequence_unpad_op_lite extra SRCS sequence_unpad_op.cc DEPS ${op_DEPS})
+add_operator(sequence_pad_op_lite extra SRCS sequence_pad_op.cc DEPS ${op_DEPS})
+add_operator(sequence_mask_op_lite extra SRCS sequence_mask_op.cc DEPS ${op_DEPS})
 add_operator(im2sequence_op extra SRCS im2sequence_op.cc DEPS ${op_DEPS})
 add_operator(gather_op extra SRCS gather_op.cc DEPS ${op_DEPS})
 add_operator(anchor_generator_op extra SRCS anchor_generator_op.cc DEPS ${op_DEPS})
@@ -87,6 +90,7 @@ add_operator(fake_quantize_range_abs_max_op extra SRCS fake_quantize_range_abs_m
 add_operator(sequence_expand_as_op_lite extra SRCS sequence_expand_as_op.cc DEPS ${op_DEPS})
 add_operator(assign_value_op basic SRCS assign_value_op.cc DEPS ${op_DEPS})
 add_operator(fake_quantize_dequantize_moving_avg_abs_max_op extra SRCS fake_quantize_dequantize_moving_avg_max_abs.cc DEPS ${op_DEPS})
+add_operator(fake_quantize_dequantize_abs_max_op extra SRCS fake_quantize_dequantize_abs_max.cc DEPS ${op_DEPS})
 add_operator(fake_channel_wise_dequantize_max_abs_op extra SRCS fake_channel_wise_dequantize_max_abs.cc DEPS ${op_DEPS})
 add_operator(split_lod_tensor_op_lite extra SRCS split_lod_tensor_op.cc DEPS ${op_DEPS})
 add_operator(merge_lod_tensor_op_lite extra SRCS merge_lod_tensor_op.cc DEPS ${op_DEPS})
@@ -112,6 +116,8 @@ add_operator(crf_decoding_op_lite extra SRCS crf_decoding_op.cc DEPS ${op_DEPS})
 add_operator(ctc_align_op_lite extra SRCS ctc_align_op.cc DEPS ${op_DEPS})
 add_operator(max_pool_with_index_op extra SRCS max_pool_with_index_op.cc DEPS ${op_DEPS})
 add_operator(pixel_shuffle_op extra SRCS pixel_shuffle_op.cc DEPS ${op_DEPS})
+add_operator(clip_op extra SRCS clip_op.cc DEPS ${op_DEPS})
+add_operator(print_op extra SRCS print_op.cc DEPS ${op_DEPS})
 
 # for OCR specific
 add_operator(while_op extra SRCS while_op.cc DEPS ${op_DEPS})
@@ -147,6 +153,7 @@ add_operator(search_seq_fc_op extra SRCS search_seq_fc_op.cc DEPS ${op_DEPS})
 add_operator(sequence_topk_avg_pooling_op basic SRCS sequence_topk_avg_pooling_op.cc DEPS ${op_DEPS})
 add_operator(search_fc_op basic SRCS search_fc_op.cc DEPS ${op_DEPS})
 add_operator(lstm_op extra SRCS lstm_op.cc DEPS ${op_DEPS})
+add_operator(topk_pooling_op extra SRCS topk_pooling_op.cc DEPS ${op_DEPS})
 # for deformable-convNet
 add_operator(deformable_conv_op extra SRCS deformable_conv_op.cc DEPS ${op_DEPS})
 
@@ -158,12 +165,16 @@ add_operator(activation_grad_ops train SRCS activation_grad_ops.cc DEPS ${op_DEP
 add_operator(elementwise_grad_op train SRCS elementwise_grad_ops.cc DEPS ${op_DEPS})
 add_operator(mul_grad_op train SRCS mul_grad_op.cc DEPS ${op_DEPS})
 add_operator(sgd_op train SRCS sgd_op.cc DEPS ${op_DEPS})
+add_operator(sequence_pool_grad train SRCS sequence_pool_grad_op.cc DEPS ${op_DEPS})
 
 # Only for XPU
 add_operator(__xpu__resnet50_op extra SRCS __xpu__resnet50_op.cc DEPS ${op_DEPS})
 add_operator(__xpu__multi_encoder_op extra SRCS __xpu__multi_encoder_op.cc DEPS ${op_DEPS})
 add_operator(__xpu__embedding_with_eltwise_add_op extra SRCS __xpu__embedding_with_eltwise_add_op.cc DEPS ${op_DEPS})
 add_operator(__xpu__fc_op extra SRCS __xpu__fc_op.cc DEPS ${op_DEPS})
+add_operator(__xpu__resnet_cbam_op extra SRCS __xpu__resnet_cbam_op.cc DEPS ${op_DEPS})
+add_operator(__xpu__search_attention_op extra SRCS __xpu__search_attention_op.cc DEPS ${op_DEPS})
+add_operator(__xpu__mmdnn_op extra SRCS __xpu__mmdnn_op.cc DEPS ${op_DEPS})
 
 if (NOT LITE_WITH_X86)
     lite_cc_test(test_fc_op SRCS fc_op_test.cc

@@ -17,6 +17,8 @@ PY_VERSION=""
 WITH_CV=OFF
 # controls whether to print log information, default is ON.
 WITH_LOG=ON
+# controls whether to throw the exception when error occurs, default is OFF 
+WITH_EXCEPTION=OFF
 # options of striping lib according to input model.
 WITH_STRIP=OFF
 OPTMODEL_DIR=""
@@ -24,7 +26,7 @@ OPTMODEL_DIR=""
 WITH_OPENCL=OFF
 # options of compiling rockchip NPU lib.
 WITH_ROCKCHIP_NPU=OFF
-ROCKCHIP_NPU_SDK_ROOT=""
+ROCKCHIP_NPU_SDK_ROOT="$(pwd)/rknpu_ddk"  # Download RKNPU SDK from https://github.com/airockchip/rknpu_ddk.git
 # options of compiling baidu XPU lib.
 WITH_BAIDU_XPU=OFF
 BAIDU_XPU_SDK_ROOT=""
@@ -60,6 +62,7 @@ function init_cmake_mutable_options {
                         -DPY_VERSION=$PY_VERSION \
                         -DLITE_WITH_CV=$WITH_CV \
                         -DLITE_WITH_LOG=$WITH_LOG \
+                        -DLITE_WITH_EXCEPTION=$WITH_EXCEPTION \
                         -DLITE_BUILD_TAILOR=$WITH_STRIP \
                         -DLITE_OPTMODEL_DIR=$OPTMODEL_DIR \
                         -DLITE_WITH_OPENCL=$WITH_OPENCL \
@@ -210,6 +213,7 @@ function print_usage {
     echo -e "|     --python_version: (2.7|3.5|3.7); controls python version to compile whl, default is None                                                         |"
     echo -e "|     --with_cv: (OFF|ON); controls whether to compile cv functions into lib, default is OFF                                                           |"
     echo -e "|     --with_log: (OFF|ON); controls whether to print log information, default is ON                                                                   |"
+    echo -e "|     --with_exception: (OFF|ON); controls whether to throw the exception when error occurs, default is OFF                                            |"
     echo -e "|                                                                                                                                                      |"
     echo -e "|  arguments of striping lib according to input model:                                                                                                 |"
     echo -e "|     ./lite/tools/build_linux.sh --with_strip=ON --opt_model_dir=YourOptimizedModelDir                                                                |"
@@ -225,6 +229,8 @@ function print_usage {
     echo -e "|     ./lite/tools/build_linux.sh --with_rockchip_npu=ON --rockchip_npu_sdk_root=YourRockchipNpuSdkPath                                                |"
     echo -e "|     --with_rockchip_npu: (OFF|ON); controls whether to compile lib for rockchip_npu, default is OFF                                                  |"
     echo -e "|     --rockchip_npu_sdk_root: (path to rockchip_npu DDK file) required when compiling rockchip_npu library                                            |"
+    echo -e "|             you can download rockchip NPU SDK from:  https://github.com/airockchip/rknpu_ddk.git                                                     |"
+    echo -e "|  detailed information about Paddle-Lite RKNPU:  https://paddle-lite.readthedocs.io/zh/latest/demo_guides/rockchip_npu.html                           |"
     echo -e "|                                                                                                                                                      |"
     echo -e "|  arguments of baidu xpu library compiling:                                                                                                           |"
     echo -e "|     ./lite/tools/build_linux.sh --with_baidu_xpu=ON --baidu_xpu_sdk_root=YourBaiduXpuSdkPath                                                         |"
@@ -277,6 +283,11 @@ function main {
             # ON or OFF, default ON
             --with_log=*)
                 WITH_LOG="${i#*=}"
+                shift
+                ;;
+            # ON or OFF, default OFF
+            --with_exception=*)
+                WITH_EXCEPTION="${i#*=}"
                 shift
                 ;;
             # ON or OFF, default OFF

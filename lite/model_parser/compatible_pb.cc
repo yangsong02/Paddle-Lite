@@ -153,10 +153,22 @@ void OpAttrsAnyToCpp(const OpDescType &any_desc, cpp::OpDesc *cpp_desc) {
         LOG(FATAL) << "Unsupported attr type found " << static_cast<int>(type);
     }
   };
-
+  // On arm backend, some op attributes have no effect on inference process, we
+  // abandoned these attributes to reduce model_size and run-time memory usage.
+  // This process is operated on opt tool, so it will not increase
+  // initialization time.
+  std::vector<std::string> skiped_attributes = {"op_callstack",
+                                                "op_namescope",
+                                                "op_role",
+                                                "workspace_size_MB",
+                                                "op_role_var"};
   for (const auto &attr_name : any_desc.AttrNames()) {
-    auto type = any_desc.GetAttrType(attr_name);
-    set_attr(attr_name, type);
+    auto it = std::find(
+        skiped_attributes.begin(), skiped_attributes.end(), attr_name);
+    if (it == skiped_attributes.end()) {
+      auto type = any_desc.GetAttrType(attr_name);
+      set_attr(attr_name, type);
+    }
   }
 }
 
@@ -234,7 +246,7 @@ void OpAttrsCppToAny(const cpp::OpDesc &cpp_desc, OpDescType *any_desc) {
   template <>                                                               \
   void TransformBlockDescCppToAny<NT::T>(const cpp::T &cpp_desc,            \
                                          NT::T *any_desc) {                 \
-    auto desc = cpp_desc;                                                   \
+    const cpp::T &desc = cpp_desc;                                          \
     any_desc->SetIdx(desc.Idx());                                           \
     any_desc->SetParentIdx(desc.ParentIdx());                               \
     any_desc->SetForwardBlockIdx(desc.ForwardBlockIdx());                   \
@@ -277,7 +289,7 @@ void OpAttrsCppToAny(const cpp::OpDesc &cpp_desc, OpDescType *any_desc) {
   template <>                                                            \
   void TransformProgramDescCppToAny<NT::T>(const cpp::T &cpp_desc,       \
                                            NT::T *any_desc) {            \
-    auto desc = cpp_desc;                                                \
+    auto &desc = cpp_desc;                                               \
     if (desc.HasVersion()) {                                             \
       any_desc->SetVersion(desc.Version());                              \
     }                                                                    \
